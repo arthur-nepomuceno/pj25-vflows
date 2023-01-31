@@ -1,17 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 import styled from 'styled-components';
-import vflows from '../assets/logo.png'
+import logo from '../assets/logo.png'
 import InputMask from 'react-input-mask';
+import { checkCNPJ } from '../utilities/checkCNPJ';
 
 export default function Login() {
+    const [CNPJ, setCNPJ] = useState(null);
+    const navigate = useNavigate();
+
+    function login(input) {
+        const check = checkCNPJ(input);
+        
+        setCNPJ('');
+
+        if(check){
+            navigate('/contracts');
+        } else {
+            alert('CNPJ Inválido.')
+        }
+
+    }
+
     return (
         <Container>
-            <img src={vflows} alt='VFlows'/>
+            <img src={logo} alt='VFlows' />
             <h1>PAGAMENTO DE FORNECEDOR</h1>
             <div>
                 <h2>CNPJ</h2>
-                <InputMask mask='99.999.999/9999-99'/>
-                <button>Acessar</button>
+                <InputMask value={CNPJ} onChange={(e) => { setCNPJ(e.target.value) }} mask='99.999.999/9999-99' required />
+                <button onClick={() => {login(CNPJ)}}>Acessar</button>
             </div>
         </Container>
     )
@@ -73,6 +91,8 @@ const Container = styled.div`
         height: 18%;
         border: 2px solid rgb(227, 227, 221);
         border-radius: 3px;
+
+        outline: none;
     }
 
     div button {
